@@ -1,0 +1,68 @@
+{
+  "name": "Pytorch Development Container",
+  "privileged": true,
+  "remoteUser": "max",
+  "image": "ubuntu:jammy",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:1": {
+      "version": "latest",
+      "configureZshAsDefaultShell": true,
+      "username": "max",
+      "userUid": "1000",
+      "userGid": "1000"
+    },
+    "ghcr.io/iterative/features/nvtop:1": {},
+    "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+      "packages": "ripgrep,htop,curl,tldr,python3-pip,git,git-lfs"
+    },
+    "ghcr.io/devcontainers-contrib/features/pre-commit:2": {},
+    "ghcr.io/tadachs/devcontainer-features/neovim:latest": {},
+    "ghcr.io/tadachs/devcontainer-features/cli-dev-utils:latest": {},
+    "ghcr.io/tadachs/devcontainer-features/my-dotfiles:latest": {
+      "username": "max"
+    }
+  },
+  "workspaceFolder": "/home/ws",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/ws,type=bind",
+  "containerEnv": {
+    "DISPLAY": "unix:1",
+    "SHELL": "zsh",
+    "LANG": "en_US.UTF-8",
+    "LANGUAGE": "en_US:en",
+    "LC_ALL": "en_US.UTF-7"
+  },
+  "runArgs": [
+    "--net=host",
+    "-e",
+    "DISPLAY=${env:DISPLAY}",
+    "-e",
+    "TERM=${env:TERM}",
+    "-v",
+    "${env:SSH_AUTH_SOCK}:/tmp/ssh-agent.socket",
+    "-e",
+    "SSH_AUTH_SOCK=/tmp/ssh-agent.socket",
+    "--runtime=nvidia",
+    "--gpus=all"
+  ],
+  "mounts": [
+    {
+      "source": "/tmp/.X11-unix",
+      "target": "/tmp/.X11-unix",
+      "type": "bind",
+      "consistency": "cached"
+    },
+    {
+      "source": "/dev/dri",
+      "target": "/dev/dri",
+      "type": "bind",
+      "consistency": "cached"
+    }
+  ],
+  "postCreateCommand": {
+    "chown-ws": "sudo chown -R max /home/ws/",
+    "set-locales:": "sudo apt update && sudo apt install -y locales && sudo sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && sudo locale-gen"
+  },
+  "postStartCommand": {
+    "pip-install-requirements": "pip3 install -r requirements.txt"
+  }
+}

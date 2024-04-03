@@ -1,0 +1,6 @@
+torch==2.2.1
+jupyterlab==4.1.5
+numpy==1.26.4
+xeus-python==0.15.2
+debugpy==1.8.1
+matplotlib==3.8.3
